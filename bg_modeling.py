@@ -75,7 +75,7 @@ def capture_slides_bg_modeling(
         # Hence wait till the motion across subsequent frames has settled down.
         elif capture_frame and p_non_zero >= MIN_PERCENT_THRESH:
             capture_frame = False
-        
+
         prog_bar.update(1)
 
     # Release progress bar and video capture object.

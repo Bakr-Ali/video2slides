@@ -5,9 +5,7 @@ from PIL import Image
 from tqdm import tqdm
 
 
-def find_similar_images(
-    base_dir, hash_size=8, hashfunc=imagehash.dhash, queue_len=5, threshold=4
-):
+def find_similar_images(base_dir, hash_size=8, hashfunc=imagehash.dhash, queue_len=5, threshold=4):
     snapshots_files = sorted(os.listdir(base_dir))
 
     hash_dict = {}
@@ -44,9 +42,7 @@ def find_similar_images(
     return hash_dict, duplicates
 
 
-def remove_duplicates(
-    base_dir, hash_size=8, hashfunc=imagehash.dhash, queue_len=5, threshold=4
-):
+def remove_duplicates(base_dir, hash_size=8, hashfunc=imagehash.dhash, queue_len=5, threshold=4):
     _, duplicates = find_similar_images(
         base_dir,
         hash_size=hash_size,

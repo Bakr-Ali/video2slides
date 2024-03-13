@@ -5,9 +5,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="This script is used to convert video frames into slide PDFs."
     )
-    parser.add_argument(
-        "-f", "--folder", help="Path to the image folder", type=str
-    )
+    parser.add_argument("-f", "--folder", help="Path to the image folder", type=str)
     parser.add_argument(
         "-o",
         "--out_path",

@@ -1,21 +1,13 @@
 import argparse
-import os
-import validators
 from config import *
-from download_video import download_video
-from bg_modeling import capture_slides_bg_modeling
-from frame_differencing import capture_slides_frame_diff
 from post_process import remove_duplicates
-from utils import create_output_directory, convert_slides_to_pdf
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="This script is used to convert video frames into slide PDFs."
     )
-    parser.add_argument(
-        "-f", "--folder", help="Path to the image folder", type=str
-    )
+    parser.add_argument("-f", "--folder", help="Path to the image folder", type=str)
     parser.add_argument(
         "-hf",
         "--hash-func",
@@ -54,7 +46,4 @@ if __name__ == "__main__":
     sim_threshold = args.threshold
 
     diff_threshold = int(hash_size * hash_size * (100 - sim_threshold) / 100)
-    remove_duplicates(
-        args.folder, hash_size, hash_func, queue_len, diff_threshold
-    )
-
+    remove_duplicates(args.folder, hash_size, hash_func, queue_len, diff_threshold)

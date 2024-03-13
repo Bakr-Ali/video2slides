@@ -21,9 +21,7 @@ def download_video_from_url(url, output_dir=DOWNLOAD_DIR):
 
         os.makedirs(output_dir, exist_ok=True)
 
-        temp_file = tempfile.NamedTemporaryFile(
-            delete=False, suffix=file_extension, dir=output_dir
-        )
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=file_extension, dir=output_dir)
         temp_file_path = temp_file.name
 
         with open(temp_file_path, "wb") as file:
@@ -58,7 +56,7 @@ def download_video_from_youtube(url, output_dir=DOWNLOAD_DIR):
 def download_video(url, output_dir=DOWNLOAD_DIR):
     parsed_url = urlparse(url)
     domain = parsed_url.netloc.lower()
-    domain = re.sub(r"\.", "", domain) # Match for both youtube and youtu.be
+    domain = re.sub(r"\.", "", domain)  # Match for both youtube and youtu.be
 
     print("---" * 5, "Downloading video file", "---" * 5)
 
