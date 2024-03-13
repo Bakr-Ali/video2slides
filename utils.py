@@ -12,8 +12,8 @@ from imutils import paths
 
 
 def sanitize_file_name(string):
-    sanitized_string = re.sub(r'[^\w ]+', '', string)
-    sanitized_string = re.sub(r'\s+', ' ', sanitized_string)
+    sanitized_string = re.sub(r"[^\w ]+", "", string)
+    sanitized_string = re.sub(r"\s+", " ", sanitized_string)
     sanitized_string = sanitized_string.strip()
 
     return sanitized_string
@@ -22,15 +22,17 @@ def sanitize_file_name(string):
 def resize_image_frame(frame, resize_width):
     ht, wd, _ = frame.shape
     new_height = resize_width * ht / wd
-    frame = cv2.resize(
-        frame, (resize_width, int(new_height)), interpolation=cv2.INTER_AREA
-    )
+    frame = cv2.resize(frame, (resize_width, int(new_height)), interpolation=cv2.INTER_AREA)
 
     return frame
 
 
+def get_video_name(video_path):
+    return video_path.rsplit(os.sep)[-1].split(".")[0]
+
+
 def create_output_directory(video_path, output_path, type_bgsub):
-    vid_file_name = video_path.rsplit(os.sep)[-1].split(".")[0]
+    vid_file_name = get_video_name(video_path)
     output_dir_path = os.path.join(output_path, vid_file_name, type_bgsub)
 
     # Remove the output directory if there is already one.
@@ -50,8 +52,8 @@ def convert_slides_to_pdf(img_dir, output_path=None):
     if not os.path.isdir(img_dir):
         print("The image directory doesn't exist!")
         return
-    
-    if output_path == None:
+
+    if output_path is None:
         pdf_file_name = os.path.basename(img_dir) + ".pdf"
         output_path = os.path.join(img_dir, pdf_file_name)
         print("Output PDF Path:", output_path)

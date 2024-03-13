@@ -6,7 +6,7 @@ from download_video import download_video
 from bg_modeling import capture_slides_bg_modeling
 from frame_differencing import capture_slides_frame_diff
 from post_process import remove_duplicates
-from utils import create_output_directory, convert_slides_to_pdf
+from utils import create_output_directory, convert_slides_to_pdf, get_video_name
 
 
 if __name__ == "__main__":
@@ -14,7 +14,10 @@ if __name__ == "__main__":
         description="This script is used to convert video frames into slide PDFs."
     )
     parser.add_argument(
-        "-v", "--video_path", help="Path to the video file, video url, or YouTube video link", type=str
+        "-v",
+        "--video_path",
+        help="Path to the video file, video url, or YouTube video link",
+        type=str,
     )
     parser.add_argument(
         "-o",
@@ -76,9 +79,7 @@ if __name__ == "__main__":
 
     queue_len = args.queue_len
     if queue_len <= 0:
-        print(
-            f"Warnings: queue_len argument must be positive. Fallback to {HASH_BUFFER_HISTORY}"
-        )
+        print(f"Warnings: queue_len argument must be positive. Fallback to {HASH_BUFFER_HISTORY}")
         queue_len = HASH_BUFFER_HISTORY
 
     video_path = args.video_path
@@ -123,12 +124,12 @@ if __name__ == "__main__":
         sim_threshold = args.threshold
 
         diff_threshold = int(hash_size * hash_size * (100 - sim_threshold) / 100)
-        remove_duplicates(
-            output_dir_path, hash_size, hash_func, queue_len, diff_threshold
-        )
+        remove_duplicates(output_dir_path, hash_size, hash_func, queue_len, diff_threshold)
 
     if args.convert_to_pdf:
-        convert_slides_to_pdf(output_dir_path)
+        vid_file_name = get_video_name(video_path)
+        save_pdf_path = os.path.join(output_dir_path, f"{vid_file_name}_{type_bg_sub}.pdf")
+        convert_slides_to_pdf(output_dir_path, output_path=save_pdf_path)
 
     # if temp_file:
     #     os.remove(video_path)

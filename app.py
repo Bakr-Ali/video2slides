@@ -7,7 +7,7 @@ from download_video import download_video
 from bg_modeling import capture_slides_bg_modeling
 from frame_differencing import capture_slides_frame_diff
 from post_process import remove_duplicates
-from utils import create_output_directory, convert_slides_to_pdf
+from utils import create_output_directory, convert_slides_to_pdf, get_video_name
 
 
 def process(
@@ -44,11 +44,11 @@ def process(
     hash_func = HASH_FUNC_DICT.get(hash_func.lower())
 
     diff_threshold = int(hash_size * hash_size * (100 - sim_threshold) / 100)
-    remove_duplicates(
-        output_dir_path, hash_size, hash_func, hash_queue_len, diff_threshold
-    )
+    remove_duplicates(output_dir_path, hash_size, hash_func, hash_queue_len, diff_threshold)
 
-    pdf_path = convert_slides_to_pdf(output_dir_path)
+    vid_file_name = get_video_name(video_path)
+    pdf_path = os.path.join(output_dir_path, f"{vid_file_name}_{bg_type}.pdf")
+    convert_slides_to_pdf(output_dir_path, pdf_path)
 
     # Remove unneccessary files
     os.remove(video_path)
