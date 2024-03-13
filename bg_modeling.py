@@ -13,6 +13,7 @@ def capture_slides_bg_modeling(
     threshold,
     MIN_PERCENT_THRESH,
     MAX_PERCENT_THRESH,
+    frame_rate=1,
 ):
     print(f"Using {type_bgsub} for Background Modeling...")
     print("---" * 10)
@@ -38,15 +39,20 @@ def capture_slides_bg_modeling(
         print("Unable to open video file: ", video_path)
         sys.exit()
 
+    frame_no = 0
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     prog_bar = tqdm(total=num_frames)
 
     # Loop over subsequent frames.
     while cap.isOpened():
         ret, frame = cap.read()
+        frame_no += 1
 
         if not ret:
             break
+        if frame_no % frame_rate != 0:
+            prog_bar.update(1)
+            continue
 
         # Create a copy of the original frame.
         orig_frame = frame.copy()

@@ -34,6 +34,14 @@ if __name__ == "__main__":
         type=str,
     )
     parser.add_argument(
+        "--frame_rate",
+        "-fr",
+        help="Processing frame rate, only process one frame every N frames. Frame rate of N will give N times speed up, but may have lower accuracy",
+        default=1,
+        choices=[1, 2, 3],
+        type=int,
+    )
+    parser.add_argument(
         "-hf",
         "--hash-func",
         help="Hash function to use for image hashing. Only effective if post-processing is enabled",
@@ -85,6 +93,7 @@ if __name__ == "__main__":
     video_path = args.video_path
     output_dir_path = args.out_dir
     type_bg_sub = args.type
+    frame_rate = args.frame_rate
     temp_file = False
 
     if validators.url(video_path):
@@ -100,7 +109,7 @@ if __name__ == "__main__":
     output_dir_path = create_output_directory(video_path, output_dir_path, type_bg_sub)
 
     if type_bg_sub.lower() == "frame_diff":
-        capture_slides_frame_diff(video_path, output_dir_path)
+        capture_slides_frame_diff(video_path, output_dir_path, frame_rate=frame_rate)
     else:
         if type_bg_sub.lower() == "gmg":
             thresh = DEC_THRESH
@@ -110,6 +119,7 @@ if __name__ == "__main__":
         capture_slides_bg_modeling(
             video_path,
             output_dir_path,
+            frame_rate=frame_rate,
             type_bgsub=type_bg_sub,
             history=FRAME_BUFFER_HISTORY,
             threshold=thresh,

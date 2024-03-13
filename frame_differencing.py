@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 
 def capture_slides_frame_diff(
-    video_path, output_dir_path, MIN_PERCENT_THRESH=0.06, ELAPSED_FRAME_THRESH=85
+    video_path, output_dir_path, frame_rate=1, MIN_PERCENT_THRESH=0.06, ELAPSED_FRAME_THRESH=85
 ):
     prev_frame = None
     curr_frame = None
@@ -24,6 +24,7 @@ def capture_slides_frame_diff(
         sys.exit()
 
     success, first_frame = cap.read()
+    frame_no = 1
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     prog_bar = tqdm(total=num_frames)
 
@@ -50,8 +51,13 @@ def capture_slides_frame_diff(
     # Loop over subsequent frames.
     while cap.isOpened():
         ret, frame = cap.read()
+        frame_no += 1
+
         if not ret:
             break
+        if frame_no % frame_rate != 0:
+            prog_bar.update(1)
+            continue
 
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         curr_frame = frame_gray
