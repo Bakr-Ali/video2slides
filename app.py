@@ -223,4 +223,4 @@ with gr.Blocks(css="style.css") as demo:
         file_output,
     )
 
-demo.queue(concurrency_count=4).launch()
+demo.queue(default_concurrency_limit=4).launch()

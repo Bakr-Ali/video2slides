@@ -249,5 +249,6 @@ TODO.md
 # Download folder
 
 downloads/
+output_results/
 
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebooks,metals,visualstudiocode,sublimetext,python

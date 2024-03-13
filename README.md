@@ -17,7 +17,7 @@ This is highly useful when one wishes to have a video lecture(with or without an
     **If you already have opencv installed, skip this step**
 
     ```bash
-    pip install opencv-contrib-python==4.7.0.72
+    pip install opencv-contrib-python
     ```
 
 2. Install other packages
@@ -30,7 +30,7 @@ This is highly useful when one wishes to have a video lecture(with or without an
    **If you don't use the GUI version, skip this step**
 
    ```bash
-    pip install gradio
+    pip install gradio>=4.0
     ```
 
 ## Command-Line Options
