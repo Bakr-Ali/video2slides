@@ -24,7 +24,7 @@ def process(
     output_dir_path = "output_results"
     output_dir_path = create_output_directory(video_path, output_dir_path, bg_type)
 
-    if bg_type.lower() == "Frame Diff":
+    if bg_type.lower() == "frame diff":
         capture_slides_frame_diff(
             video_path,
             output_dir_path,
