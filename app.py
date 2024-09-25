@@ -14,6 +14,7 @@ def process(
     video_path,
     bg_type,
     frame_processing_interval,
+    target_processing_rate,
     frame_buffer_history,
     hash_size,
     hash_func,
@@ -28,6 +29,7 @@ def process(
             video_path,
             output_dir_path,
             frame_processing_interval=frame_processing_interval,
+            target_processing_rate=target_processing_rate
             )
     else:
         if bg_type.lower() == "gmg":
@@ -40,6 +42,7 @@ def process(
             output_dir_path,
             type_bgsub=bg_type,
             frame_processing_interval=frame_processing_interval,
+            target_processing_rate=target_processing_rate,
             history=frame_buffer_history,
             threshold=thresh,
             MIN_PERCENT_THRESH=MIN_PERCENT,
@@ -67,6 +70,7 @@ def process_file(
     file_obj,
     bg_type,
     frame_processing_interval,
+    target_processing_rate,
     frame_buffer_history,
     hash_size,
     hash_func,
@@ -77,6 +81,7 @@ def process_file(
         file_obj.name,
         bg_type,
         frame_processing_interval,
+        target_processing_rate,
         frame_buffer_history,
         hash_size,
         hash_func,
@@ -89,6 +94,7 @@ def process_via_url(
     url,
     bg_type,
     frame_processing_interval,
+    target_processing_rate,
     frame_buffer_history,
     hash_size,
     hash_func,
@@ -103,6 +109,7 @@ def process_via_url(
             video_path,
             bg_type,
             frame_processing_interval,
+            target_processing_rate,
             frame_buffer_history,
             hash_size,
             hash_func,
@@ -111,6 +118,13 @@ def process_via_url(
         )
     else:
         raise gr.Error("Please enter a valid video URL")
+
+
+def toggle_frame_interval(rate):
+    if rate == 0:
+        return gr.update(interactive=True)  # Enable the frame_processing_interval slider
+    else:
+        return gr.update(interactive=False)  # Disable the frame_processing_interval slider
 
 
 with gr.Blocks(css="style.css") as demo:
@@ -147,6 +161,13 @@ with gr.Blocks(css="style.css") as demo:
                     step=1,
                     label="Frame processing interval",
                     info="Only process one frame every N frames. Frame interval of N will give N times speed up, but may have lower accuracy. This option is ignored if the dynamic 'target_processing_rate' is enabled.",
+                    interactive=True,
+                )
+                target_processing_rate = gr.Dropdown(
+                    [0, 30, 20, 15, 10],
+                    value=0,
+                    label="Target Processing Rate (frames per second)",
+                    info="Sets a target frame processing rate (M), dynamically adjusting the frame processing interval (N) to process approximately M frames per second of video. Lower target rates may result in reduced accuracy. If enabled, the static 'frame processing interval' option is ignored.",
                 )
                 frame_buffer_history = gr.Slider(
                     minimum=5,
@@ -214,12 +235,20 @@ with gr.Blocks(css="style.css") as demo:
                 [file_url, file_output],
             )
 
+    # Add a change event to toggle the frame processing interval based on the selected target rate
+    target_processing_rate.change(
+        toggle_frame_interval,  # Function to execute on change
+        inputs=target_processing_rate,  # The input is the target processing rate value
+        outputs=frame_processing_interval  # The output is the updated state of the frame_processing_interval slider
+    )
+
     file_url.submit(
         process_via_url,
         [
             file_url,
             bg_type,
             frame_processing_interval,
+            target_processing_rate,
             frame_buffer_history,
             hash_size,
             hash_func,
@@ -234,6 +263,7 @@ with gr.Blocks(css="style.css") as demo:
             upload_button,
             bg_type,
             frame_processing_interval,
+            target_processing_rate,
             frame_buffer_history,
             hash_size,
             hash_func,

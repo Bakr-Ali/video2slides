@@ -2,7 +2,7 @@ import cv2
 import os
 import sys
 from tqdm import tqdm
-from utils import resize_image_frame
+from utils import resize_image_frame, normal_round
 
 
 def capture_slides_bg_modeling(
@@ -14,6 +14,7 @@ def capture_slides_bg_modeling(
     MIN_PERCENT_THRESH,
     MAX_PERCENT_THRESH,
     frame_processing_interval=1,
+    target_processing_rate=0,
 ):
     print(f"Using {type_bgsub} for Background Modeling...")
     print("---" * 10)
@@ -42,6 +43,23 @@ def capture_slides_bg_modeling(
     frame_no = 0
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     prog_bar = tqdm(total=num_frames)
+
+    # Get the frame rate of the video
+    video_fps = cap.get(cv2.CAP_PROP_FPS)
+    print(f"Video's frame rate is: {video_fps}fps")
+    
+    if target_processing_rate != 0:
+        if target_processing_rate == 30:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate - 0.1)
+        elif target_processing_rate == 20:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate)
+        elif target_processing_rate == 15:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.2)
+        elif target_processing_rate == 10:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.1)
+    	
+    # TODO: check if frame_processing_interval=0 (can happen if video_fps<18, but it is rare right?)
+    
 
     # Loop over subsequent frames.
     while cap.isOpened():

@@ -42,6 +42,14 @@ if __name__ == "__main__":
         type=int,
     )
     parser.add_argument(
+        "--target-processing-rate",
+        "-tpr",
+        help="Sets a target frame processing rate (M), dynamically adjusting the frame processing interval (N) to process approximately M frames per second of video. Lower target rates may result in reduced accuracy. If enabled, the static --frame-processing-interval option is ignored.",
+        default=0,
+        choices=[30, 20, 15, 10, 0],
+        type=int,
+    )
+    parser.add_argument(
         "-hf",
         "--hash-func",
         help="Hash function to use for image hashing. Only effective if post-processing is enabled",
@@ -94,6 +102,7 @@ if __name__ == "__main__":
     output_dir_path = args.out_dir
     type_bg_sub = args.type
     frame_processing_interval = args.frame_processing_interval
+    target_processing_rate = args.target_processing_rate
     temp_file = False
 
     if validators.url(video_path):
@@ -113,6 +122,7 @@ if __name__ == "__main__":
             video_path,
             output_dir_path,
             frame_processing_interval=frame_processing_interval,
+            target_processing_rate=target_processing_rate)
     else:
         if type_bg_sub.lower() == "gmg":
             thresh = DEC_THRESH
@@ -123,6 +133,7 @@ if __name__ == "__main__":
             video_path,
             output_dir_path,
             frame_processing_interval=frame_processing_interval,
+            target_processing_rate=target_processing_rate,
             type_bgsub=type_bg_sub,
             history=FRAME_BUFFER_HISTORY,
             threshold=thresh,

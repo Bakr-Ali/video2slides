@@ -4,6 +4,7 @@ import cv2
 import shutil
 import img2pdf
 from imutils import paths
+import math
 
 # PIL can also be used to convert the image set into PDFs.
 # However, using PIL requires opening each of the images in the set.
@@ -46,6 +47,14 @@ def create_output_directory(video_path, output_path, type_bgsub):
     print("***" * 10, "\n")
 
     return output_dir_path
+
+
+# https://stackoverflow.com/a/52617883/
+def normal_round(n, decimals=0):
+    expoN = n * 10 ** decimals
+    if abs(expoN) - abs(math.floor(expoN)) < 0.5:
+        return math.floor(expoN) / 10 ** decimals
+    return math.ceil(expoN) / 10 ** decimals
 
 
 def convert_slides_to_pdf(img_dir, output_path=None):

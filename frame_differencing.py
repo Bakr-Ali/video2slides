@@ -2,12 +2,14 @@ import cv2
 import os
 import sys
 from tqdm import tqdm
+from utils import normal_round
 
 
 def capture_slides_frame_diff(
     video_path,
     output_dir_path,
     frame_processing_interval=1,
+    target_processing_rate=0,
     MIN_PERCENT_THRESH=0.06,
     ELAPSED_FRAME_THRESH=85
 ):
@@ -51,6 +53,23 @@ def capture_slides_frame_diff(
         # Save frame.
         cv2.imwrite(out_file_path, first_frame, [cv2.IMWRITE_JPEG_QUALITY, 75])
         prog_bar.update(1)
+
+    # Get the frame rate of the video
+    video_fps = cap.get(cv2.CAP_PROP_FPS)
+    print(f"Video's frame rate is: {video_fps}fps")
+    
+    if target_processing_rate != 0:
+        if target_processing_rate == 30:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate - 0.1)
+        elif target_processing_rate == 20:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate)
+        elif target_processing_rate == 15:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.2)
+        elif target_processing_rate == 10:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.1)
+    	
+    # TODO: check if frame_processing_interval=0 (can happen if video_fps<18, but it is rare right?)
+    
 
     # Loop over subsequent frames.
     while cap.isOpened():
