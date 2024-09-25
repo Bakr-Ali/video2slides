@@ -13,7 +13,7 @@ from utils import create_output_directory, convert_slides_to_pdf, get_video_name
 def process(
     video_path,
     bg_type,
-    frame_rate,
+    frame_processing_interval,
     frame_buffer_history,
     hash_size,
     hash_func,
@@ -24,7 +24,11 @@ def process(
     output_dir_path = create_output_directory(video_path, output_dir_path, bg_type)
 
     if bg_type.lower() == "Frame Diff":
-        capture_slides_frame_diff(video_path, output_dir_path, frame_rate=frame_rate)
+        capture_slides_frame_diff(
+            video_path,
+            output_dir_path,
+            frame_processing_interval=frame_processing_interval,
+            )
     else:
         if bg_type.lower() == "gmg":
             thresh = DEC_THRESH
@@ -35,7 +39,7 @@ def process(
             video_path,
             output_dir_path,
             type_bgsub=bg_type,
-            frame_rate=frame_rate,
+            frame_processing_interval=frame_processing_interval,
             history=frame_buffer_history,
             threshold=thresh,
             MIN_PERCENT_THRESH=MIN_PERCENT,
@@ -62,7 +66,7 @@ def process(
 def process_file(
     file_obj,
     bg_type,
-    frame_rate,
+    frame_processing_interval,
     frame_buffer_history,
     hash_size,
     hash_func,
@@ -72,7 +76,7 @@ def process_file(
     return process(
         file_obj.name,
         bg_type,
-        frame_rate,
+        frame_processing_interval,
         frame_buffer_history,
         hash_size,
         hash_func,
@@ -84,7 +88,7 @@ def process_file(
 def process_via_url(
     url,
     bg_type,
-    frame_rate,
+    frame_processing_interval,
     frame_buffer_history,
     hash_size,
     hash_func,
@@ -98,7 +102,7 @@ def process_via_url(
         return process(
             video_path,
             bg_type,
-            frame_rate,
+            frame_processing_interval,
             frame_buffer_history,
             hash_size,
             hash_func,
@@ -136,13 +140,13 @@ with gr.Blocks(css="style.css") as demo:
                     label="Background subtraction",
                     info="Type of background subtraction to be used",
                 )
-                frame_rate = gr.Slider(
+                frame_processing_interval = gr.Slider(
                     minimum=1,
                     maximum=3,
                     value=1,
                     step=1,
-                    label="Processing frame rate",
-                    info="Only process one frame every N frames.",
+                    label="Frame processing interval",
+                    info="Only process one frame every N frames. Frame interval of N will give N times speed up, but may have lower accuracy. This option is ignored if the dynamic 'target_processing_rate' is enabled.",
                 )
                 frame_buffer_history = gr.Slider(
                     minimum=5,
@@ -215,7 +219,7 @@ with gr.Blocks(css="style.css") as demo:
         [
             file_url,
             bg_type,
-            frame_rate,
+            frame_processing_interval,
             frame_buffer_history,
             hash_size,
             hash_func,
@@ -229,7 +233,7 @@ with gr.Blocks(css="style.css") as demo:
         [
             upload_button,
             bg_type,
-            frame_rate,
+            frame_processing_interval,
             frame_buffer_history,
             hash_size,
             hash_func,

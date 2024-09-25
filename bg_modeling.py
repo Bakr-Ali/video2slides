@@ -13,7 +13,7 @@ def capture_slides_bg_modeling(
     threshold,
     MIN_PERCENT_THRESH,
     MAX_PERCENT_THRESH,
-    frame_rate=1,
+    frame_processing_interval=1,
 ):
     print(f"Using {type_bgsub} for Background Modeling...")
     print("---" * 10)
@@ -50,7 +50,7 @@ def capture_slides_bg_modeling(
 
         if not ret:
             break
-        if frame_no % frame_rate != 0:
+        if frame_no % frame_processing_interval != 0:
             prog_bar.update(1)
             continue
 

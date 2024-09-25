@@ -15,13 +15,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-v",
-        "--video_path",
+        "--video-path",
         help="Path to the video file, video url, or YouTube video link",
         type=str,
     )
     parser.add_argument(
         "-o",
-        "--out_dir",
+        "--out-dir",
         default="output_results",
         help="Path to the output directory",
         type=str,
@@ -34,9 +34,9 @@ if __name__ == "__main__":
         type=str,
     )
     parser.add_argument(
-        "--frame_rate",
-        "-fr",
-        help="Processing frame rate, only process one frame every N frames. Frame rate of N will give N times speed up, but may have lower accuracy",
+        "--frame-processing-interval",
+        "-fpi",
+        help="Specifies the interval (N) at which frames are processed, only process one frame every N frames. Frame interval of N will give N times speed up, but may have lower accuracy. Default = 1: process every frame (no skipping)",
         default=1,
         choices=[1, 2, 3],
         type=int,
@@ -72,13 +72,13 @@ if __name__ == "__main__":
         type=int,
     )
     parser.add_argument(
-        "--no_post_process",
+        "--no-post-process",
         action="store_true",
         default=False,
         help="flag to apply post processing or not",
     )
     parser.add_argument(
-        "--convert_to_pdf",
+        "--convert-to-pdf",
         action="store_true",
         default=False,
         help="flag to convert the entire image set to pdf or not",
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     video_path = args.video_path
     output_dir_path = args.out_dir
     type_bg_sub = args.type
-    frame_rate = args.frame_rate
+    frame_processing_interval = args.frame_processing_interval
     temp_file = False
 
     if validators.url(video_path):
@@ -109,7 +109,10 @@ if __name__ == "__main__":
     output_dir_path = create_output_directory(video_path, output_dir_path, type_bg_sub)
 
     if type_bg_sub.lower() == "frame_diff":
-        capture_slides_frame_diff(video_path, output_dir_path, frame_rate=frame_rate)
+        capture_slides_frame_diff(
+            video_path,
+            output_dir_path,
+            frame_processing_interval=frame_processing_interval,
     else:
         if type_bg_sub.lower() == "gmg":
             thresh = DEC_THRESH
@@ -119,7 +122,7 @@ if __name__ == "__main__":
         capture_slides_bg_modeling(
             video_path,
             output_dir_path,
-            frame_rate=frame_rate,
+            frame_processing_interval=frame_processing_interval,
             type_bgsub=type_bg_sub,
             history=FRAME_BUFFER_HISTORY,
             threshold=thresh,

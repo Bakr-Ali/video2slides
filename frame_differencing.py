@@ -5,7 +5,11 @@ from tqdm import tqdm
 
 
 def capture_slides_frame_diff(
-    video_path, output_dir_path, frame_rate=1, MIN_PERCENT_THRESH=0.06, ELAPSED_FRAME_THRESH=85
+    video_path,
+    output_dir_path,
+    frame_processing_interval=1,
+    MIN_PERCENT_THRESH=0.06,
+    ELAPSED_FRAME_THRESH=85
 ):
     prev_frame = None
     curr_frame = None
@@ -55,7 +59,7 @@ def capture_slides_frame_diff(
 
         if not ret:
             break
-        if frame_no % frame_rate != 0:
+        if frame_no % frame_processing_interval != 0:
             prog_bar.update(1)
             continue
 
