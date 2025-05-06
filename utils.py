@@ -29,7 +29,7 @@ def resize_image_frame(frame, resize_width):
 
 
 def get_video_name(video_path):
-    return video_path.rsplit(os.sep)[-1].split(".")[0]
+    return video_path.rsplit(os.sep)[-1] #.split(".")[0]
 
 
 def create_output_directory(video_path, output_path, type_bgsub):
