@@ -16,9 +16,6 @@ def capture_slides_bg_modeling(
     frame_processing_interval=1,
     target_processing_rate=0,
 ):
-    print(f"Using {type_bgsub} for Background Modeling...")
-    print("---" * 10)
-
     if type_bgsub == "GMG":
         bg_sub = cv2.bgsegm.createBackgroundSubtractorGMG(
             initializationFrames=history, decisionThreshold=threshold
@@ -40,13 +37,9 @@ def capture_slides_bg_modeling(
         print("Unable to open video file: ", video_path)
         sys.exit()
 
-    frame_no = 0
-    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    prog_bar = tqdm(total=num_frames)
-
     # Get the frame rate of the video
     video_fps = cap.get(cv2.CAP_PROP_FPS)
-    print(f"Video's frame rate is: {video_fps}fps")
+    print(f"Video's frame rate is: {video_fps} fps")
     
     if target_processing_rate != 0:
         if target_processing_rate == 30:
@@ -60,6 +53,17 @@ def capture_slides_bg_modeling(
     	
     # TODO: check if frame_processing_interval=0 (can happen if video_fps<18, but it is rare right?)
     
+
+    print(f"Target processing rate is: {target_processing_rate}")
+    print(f"Frame processing interval is: {frame_processing_interval}\n")
+
+    print(f"Using {type_bgsub} for Background Modeling...")
+    print("---" * 10)
+
+
+    frame_no = 0
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    prog_bar = tqdm(total=num_frames)
 
     # Loop over subsequent frames.
     while cap.isOpened():

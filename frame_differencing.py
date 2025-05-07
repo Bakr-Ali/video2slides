@@ -32,10 +32,31 @@ def capture_slides_frame_diff(
     success, first_frame = cap.read()
     frame_no = 1
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    prog_bar = tqdm(total=num_frames)
+
+    # Get the frame rate of the video
+    video_fps = cap.get(cv2.CAP_PROP_FPS)
+    print(f"Video's frame rate is: {video_fps} fps")
+    
+    if target_processing_rate != 0:
+        if target_processing_rate == 30:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate - 0.1)
+        elif target_processing_rate == 20:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate)
+        elif target_processing_rate == 15:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.2)
+        elif target_processing_rate == 10:
+            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.1)
+    	
+    # TODO: check if frame_processing_interval=0 (can happen if video_fps<18, but it is rare right?)
+    
+
+    print(f"Target processing rate is: {target_processing_rate}")
+    print(f"Frame processing interval is: {frame_processing_interval}\n")
 
     print("Using frame differencing for Background Subtraction...")
     print("---" * 10)
+
+    prog_bar = tqdm(total=num_frames)
 
     # The 1st frame should always be present in the output directory.
     # Hence capture and save the 1st frame.
@@ -53,23 +74,6 @@ def capture_slides_frame_diff(
         # Save frame.
         cv2.imwrite(out_file_path, first_frame, [cv2.IMWRITE_JPEG_QUALITY, 75])
         prog_bar.update(1)
-
-    # Get the frame rate of the video
-    video_fps = cap.get(cv2.CAP_PROP_FPS)
-    print(f"Video's frame rate is: {video_fps}fps")
-    
-    if target_processing_rate != 0:
-        if target_processing_rate == 30:
-            frame_processing_interval = normal_round(video_fps / target_processing_rate - 0.1)
-        elif target_processing_rate == 20:
-            frame_processing_interval = normal_round(video_fps / target_processing_rate)
-        elif target_processing_rate == 15:
-            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.2)
-        elif target_processing_rate == 10:
-            frame_processing_interval = normal_round(video_fps / target_processing_rate + 0.1)
-    	
-    # TODO: check if frame_processing_interval=0 (can happen if video_fps<18, but it is rare right?)
-    
 
     # Loop over subsequent frames.
     while cap.isOpened():
